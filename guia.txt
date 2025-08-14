@@ -1,0 +1,134 @@
+Ruta completa para implementar SENA-Mate API
+1️⃣ Crear entorno y proyecto
+
+Abrir la terminal en la carpeta del proyecto.
+
+Crear un entorno virtual:
+
+python -m venv .venv
+
+
+Activar el entorno:
+
+En Windows:
+
+.venv\Scripts\activate
+
+
+Instalar dependencias iniciales:
+
+pip install fastapi uvicorn pydantic
+
+
+Crear estructura de carpetas:
+
+SENA-Mate/
+├── main.py
+├── prompts/
+│   └── prompt.json
+
+2️⃣ Configurar FastAPI (Base)
+
+Crear main.py con:
+
+Endpoint /ask para preguntas.
+
+Endpoint /prepPR para checklist.
+
+Cargar prompt.json.
+
+Código inicial comentado (ya lo hicimos).
+
+3️⃣ Crear archivo prompt.json
+
+Ejemplo:
+
+{
+  "system": "Eres un asistente que ayuda con tareas técnicas y explica de forma clara.",
+  "few_shots": [
+    {"question": "¿Qué es Python?", "answer": "Es un lenguaje de programación muy usado en ciencia de datos y desarrollo web."}
+  ]
+}
+
+4️⃣ Conectar con un modelo de IA
+
+Opciones:
+
+OpenAI (pago pero de alta calidad).
+
+Hugging Face (gratis en algunos modelos).
+
+Gemini (Google AI, necesita cuenta Google Cloud).
+
+Ejemplo con OpenAI:
+
+pip install openai
+
+
+Código:
+
+from openai import OpenAI
+client = OpenAI(api_key="TU_API_KEY")
+
+@app.post("/ask")
+def ask_ai(request: AskRequest):
+    respuesta = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": PROMPT_DATA["system"]},
+            {"role": "user", "content": request.question}
+        ]
+    )
+    return {
+        "answer": respuesta.choices[0].message.content,
+        "confidence": 0.95,
+        "source": "openai"
+    }
+
+5️⃣ Mejorar /prepPR para que use IA
+
+En lugar de devolver un checklist fijo, usar el modelo para generarlo según el title y description recibidos.
+
+6️⃣ Pruebas de la API
+
+Iniciar servidor:
+
+uvicorn main:app --reload --port 8000
+
+
+Abrir en navegador:
+
+http://127.0.0.1:8000/docs
+
+
+Probar /ask y /prepPR.
+
+7️⃣ Manejo de errores
+
+Usar HTTPException si algo falla.
+
+Validar entradas con Pydantic.
+
+8️⃣ Integración con el Frontend
+
+Usar React o el frontend que tengan.
+
+Llamar la API con fetch o axios.
+
+Mostrar las respuestas.
+
+9️⃣ Documentación
+
+Dejar comentarios en el código.
+
+Guardar instrucciones en un README.
+
+🔚 Entrega final
+
+Proyecto funcional.
+
+Endpoints listos y probados.
+
+Documentación clara.
+
+Integrado con frontend.
