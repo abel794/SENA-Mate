@@ -26,6 +26,7 @@ from openai import OpenAI
 
 # Cargar .env (si usas .env)
 from dotenv import load_dotenv
+from fastapi.middleware.cors import CORSMiddleware
 
 # -----------------------------
 # CARGA DE VARIABLES DE ENTORNO
@@ -63,6 +64,14 @@ except Exception as e:
 # INICIALIZAR APP FASTAPI
 # -----------------------------
 app = FastAPI(title="SENA-Mate API", version="1.0")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # permite todas las URLs (para desarrollo)
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # -----------------------------
 # CARGAR PROMPT (prompts/prompt.json)
@@ -295,6 +304,7 @@ def ask_ai(request: AskRequest):
             except Exception:
                 # fallback si estructura inesperada
                 content = repr(resp)
+            print(resp)
             print(f"[/ask] contenido extraído (len={len(str(content))})")
             return {
                 "question": request.question.strip(),
